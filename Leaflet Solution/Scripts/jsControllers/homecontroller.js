@@ -101,7 +101,7 @@ app.controller('HomeCtrl', function ($scope, $timeout) {
         $scope.GeoJsonLayer.clearLayers();
         $scope.overlayEnabled = false;
 
-        $timeout($scope.$apply(), 100);
+        //$timeout($scope.$apply(), 100);
     };
 
     var styleGeoJson = function (feature) {
