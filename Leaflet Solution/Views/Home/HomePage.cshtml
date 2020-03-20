@@ -1,0 +1,30 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div ng-app="MainApp" ng-controller="HomeCtrl" ng-init="initialize()" class="h-100">
+    <div class="d-flex flex-row h-100">
+        <div class="d-flex flex-column col-2">
+            <div class="d-flex flex-row justify-content-between">
+                <h4 class="d-flex flex-column p-0">Overlays</h4>
+                <div ng-show="overlayEnabled" type="button" class="btn btn-sm btn-outline-danger px-2 py-auto" ng-click="removeGeoJson()"><i class="fas fa-eraser"></i></div>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="Overlay" id="USStates" value="USStates" ng-click="getGeoJson('us_states')">
+                <label class="form-check-label" for="USStates">
+                    US States
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="Overlay" id="USCounties" value="USCounties" ng-click="getGeoJson('us_counties')">
+                <label class="form-check-label" for="USCounties">
+                    US Counties
+                </label>
+            </div>
+            <div class="d-flex flex-row justify-content-between">
+                <div type="button" class="btn btn-sm btn-outline-danger px-2 py-auto" ng-click="GetHeatMap()">Get Heatmap</div>
+            </div>
+        </div>
+        <div id="LeafletMap" class="d-flex flex-column col-10 p-0"></div>
+    </div>
+</div>
