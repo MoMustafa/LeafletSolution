@@ -14,7 +14,8 @@ namespace Leaflet_Solution
                       "~/Content/font-awesome.css",
                       "~/Content/leaflet.css",
                       "~/Content/leaflet.draw.css",
-                      "~/Content/Control.FullScreen.css"));
+                      "~/Content/Control.FullScreen.css",
+                      "~/Content/Control.GeoJsonInfo.css"));
 
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery/jquery-{version}.js"));
@@ -35,7 +36,8 @@ namespace Leaflet_Solution
                       "~/Scripts/Leaflet/leaflet.js",
                       "~/Scripts/Leaflet/leaflet-draw.js",
                       "~/Scripts/Leaflet/Control.FullScreen.js",
-                      "~/Scripts/Leaflet/leaflet-heat.js"));
+                      "~/Scripts/Leaflet/leaflet-heat.js",
+                      "~/Scripts/Leaflet/Control.GeoJsonInfo.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/angular").Include(
                         "~/Scripts/angularJS/angular.js"));

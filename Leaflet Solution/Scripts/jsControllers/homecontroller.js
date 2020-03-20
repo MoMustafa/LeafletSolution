@@ -68,6 +68,8 @@ app.controller('HomeCtrl', function ($scope, $timeout) {
 
         $scope.map.addLayer($scope.GeoJsonLayer);
 
+        $scope.GeoJsonInfo = new L.Control.GeoJSONInfo({ position: 'bottomleft' });
+
         //EVENT HANDLERS
         $scope.map.on(L.Draw.Event.CREATED, function (e) {
             var type = e.layerType,
@@ -84,12 +86,12 @@ app.controller('HomeCtrl', function ($scope, $timeout) {
         xobj.send(null);
         xobj.onreadystatechange = function () {
             if (xobj.readyState == 4 && xobj.status == "200") {
-                var geojson = L.geoJson(JSON.parse(xobj.responseText), {
-                    style: styleGeoJson
-                    //onEachFeature: StateHoverEffect
+                $scope.geojson = L.geoJson(JSON.parse(xobj.responseText), {
+                    style: styleGeoJson,
+                    onEachFeature: onEachFeature
                 });
                 $scope.GeoJsonLayer.clearLayers();
-                $scope.GeoJsonLayer.addLayer(geojson);
+                $scope.GeoJsonLayer.addLayer($scope.geojson);
                 $scope.overlayEnabled = true;
 
                 $timeout($scope.$apply(), 100);
@@ -105,13 +107,47 @@ app.controller('HomeCtrl', function ($scope, $timeout) {
 
     var styleGeoJson = function (feature) {
         return {
-            fillColor: '#bada55',
-            weight: 2,
-            opacity: 1,
-            color: 'white',
-            dashArray: '3',
-            fillOpacity: 0.4
+            stroke: true,
+            weight: 0,
+            opacity: 0.75,
+            color: '#507dbc',
+            fill: true,
+            fillColor: '#afd2eb',
+            fillOpacity: 0.1
         };
+    };
+
+    var onEachFeature = function (feature, layer) {
+        layer.on({
+            mouseover: highlightFeature,
+            mouseout: resetHighlight,
+            click: clickFeature
+        });
+    };
+
+    var highlightFeature = function (e) {
+        var layer = e.target;
+
+        layer.setStyle({
+            weight: 3
+        });
+
+        if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+            layer.bringToFront();
+        }
+
+        $scope.map.addControl($scope.GeoJsonInfo);
+        $scope.GeoJsonInfo.update(layer.feature.properties);
+    };
+
+    var resetHighlight = function (e) {
+        $scope.geojson.resetStyle(e.target);
+        $scope.GeoJsonInfo.update();
+        $scope.map.removeControl($scope.GeoJsonInfo);
+    };
+
+    var clickFeature = function (e) {
+        
     };
 
     $scope.GetHeatMap = function () {
