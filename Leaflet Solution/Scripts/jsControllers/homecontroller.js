@@ -5,6 +5,9 @@ app.controller('HomeCtrl', function ($scope, $timeout) {
         $scope.overlayEnabled = false;
         $scope.heatmapEnabled = false;
         CreateMap();
+
+        $('#strokeColor').colorpicker();
+        $('#fillColor').colorpicker();
     };
 
     var CreateMap = function () {
@@ -105,16 +108,22 @@ app.controller('HomeCtrl', function ($scope, $timeout) {
         $scope.overlayEnabled = false;
     };
 
+    $scope.geoJsonStyle = {
+        stroke: true,
+        weight: 0,
+        opacity: 0.75,
+        color: 'rgb(255, 128, 0)',
+        fill: true,
+        fillColor: 'rgb(255, 128, 0)',
+        fillOpacity: 0.1
+    }
+
+    $scope.updateOverlayOptions = function () {
+        $scope.geojson.setStyle($scope.geoJsonStyle);
+    };
+
     var styleGeoJson = function (feature) {
-        return {
-            stroke: true,
-            weight: 0,
-            opacity: 0.75,
-            color: '#507dbc',
-            fill: true,
-            fillColor: '#afd2eb',
-            fillOpacity: 0.1
-        };
+        return $scope.geoJsonStyle;
     };
 
     var onEachFeature = function (feature, layer) {
@@ -129,7 +138,7 @@ app.controller('HomeCtrl', function ($scope, $timeout) {
         var layer = e.target;
 
         layer.setStyle({
-            weight: 3
+            weight: $scope.geoJsonStyle.weight + 3
         });
 
         if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
@@ -177,4 +186,11 @@ app.controller('HomeCtrl', function ($scope, $timeout) {
         $scope.heatmapEnabled = false;
     };
 
+    $('#strokeColor').on('colorpickerChange', function (event) {
+        $scope.geoJsonStyle.color = event.color.toString();
+    });
+
+    $('#fillColor').on('colorpickerChange', function (event) {
+        $scope.geoJsonStyle.fillColor = event.color.toString();
+    });
 });

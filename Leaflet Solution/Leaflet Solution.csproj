@@ -129,6 +129,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bootstrap-colorpicker.css" />
+    <Content Include="Content\bootstrap-colorpicker.min.css" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-reboot.css" />
@@ -180,6 +182,8 @@
     <Content Include="Scripts\angularJS\angular-touch.min.js" />
     <Content Include="Scripts\angularJS\angular.js" />
     <Content Include="Scripts\angularJS\angular.min.js" />
+    <Content Include="Scripts\bootstrap\bootstrap-colorpicker.js" />
+    <Content Include="Scripts\bootstrap\bootstrap-colorpicker.min.js" />
     <Content Include="Scripts\bootstrap\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap\bootstrap.js" />
@@ -224,6 +228,10 @@
     <Content Include="webfonts\fa-regular-400.svg" />
     <Content Include="webfonts\fa-solid-900.svg" />
     <Content Include="Content\Heatmap\heatmapData.json" />
+    <Content Include="Content\bootstrap-colorpicker.css.map" />
+    <Content Include="Content\bootstrap-colorpicker.min.css.map" />
+    <Content Include="Scripts\bootstrap\bootstrap-colorpicker.js.map" />
+    <Content Include="Scripts\bootstrap\bootstrap-colorpicker.min.js.map" />
     <None Include="Scripts\jquery\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\angularJS\i18n\angular-locale_af-na.js" />
     <Content Include="Scripts\angularJS\i18n\angular-locale_af-za.js" />
@@ -1092,6 +1100,7 @@
     <Content Include="webfonts\fa-solid-900.ttf" />
     <Content Include="webfonts\fa-solid-900.woff" />
     <Content Include="webfonts\fa-solid-900.woff2" />
+    <Content Include="Views\Modals\_OverlaySettings.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

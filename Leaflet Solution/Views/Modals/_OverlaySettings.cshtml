@@ -1,0 +1,47 @@
+﻿<div class="modal fade" id="OverlaySettings" tabindex="-1" role="dialog" style="position: absolute;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Overlay Settings</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="modal-body">
+                <h6>Feature Border</h6>
+                <div class="d-flex flex-row">
+                    <label for="overlayStroke" class="mr-auto my-auto">Show Border</label>
+                    <input id="overlayStroke" class="col-3 p-0 my-auto" type="checkbox" ng-checked="{{geoJsonStyle.stroke}}" ng-model="geoJsonStyle.stroke" />
+                </div>
+                <div class="d-flex flex-row">
+                    <label for="strokeWeight" class="mr-auto my-auto">Weight</label>
+                    <input id="strokeWeight" class="col-3 p-0" type="number" min="0" step="1.0" value="{{geoJsonStyle.weight}}" ng-model="geoJsonStyle.weight" />
+                </div>
+                <div class="d-flex flex-row">
+                    <label for="strokeColor" class="mr-auto my-auto">Color</label>
+                    <input id="strokeColor" class="col-6 p-0" type="text" value="{{geoJsonStyle.color}}" ng-model="geoJsonStyle.color" />
+                </div>
+                <div class="d-flex flex-row">
+                    <label for="strokeOpacity" class="mr-auto my-auto">Opacity</label>
+                    <input id="strokeOpacity" class="col-3 p-0" type="number" min="0" max=1 step="0.1" value="{{geoJsonStyle.opacity}}" ng-model="geoJsonStyle.opacity" />
+                </div>
+                <h6>Feature Fill</h6>
+                <div class="d-flex flex-row">
+                    <label for="fill" class="mr-auto my-auto">Show Fill</label>
+                    <input id="fill" class="col-3 p-0 my-auto" type="checkbox" ng-checked="{{geoJsonStyle.fill}}" ng-model="geoJsonStyle.fill" />
+                </div>
+                <div class="d-flex flex-row">
+                    <label for="fillColor" class="mr-auto my-auto">Color</label>
+                    <input id="fillColor" class="col-6 p-0" type="text" value="{{geoJsonStyle.fillColor}}" ng-model="geoJsonStyle.fillColor" />
+                </div>
+                <div class="d-flex flex-row">
+                    <label for="fillOpacity" class="mr-auto my-auto">Opacity</label>
+                    <input id="fillOpacity" class="col-3 p-0" type="number" min="0" max=1 step="0.1" value="{{geoJsonStyle.fillOpacity}}" ng-model="geoJsonStyle.fillOpacity" />
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateOverlayOptions()">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -10,6 +10,7 @@ namespace Leaflet_Solution
         {
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
+                      "~/Content/bootstrap-colorpicker.css",
                       "~/Content/site.css",
                       "~/Content/font-awesome.css",
                       "~/Content/leaflet.css",
@@ -30,7 +31,8 @@ namespace Leaflet_Solution
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap/umd/popper.js",
-                      "~/Scripts/bootstrap/bootstrap.js"));
+                      "~/Scripts/bootstrap/bootstrap.js",
+                      "~/Scripts/bootstrap/bootstrap-colorpicker.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/leaflet").Include(
                       "~/Scripts/Leaflet/leaflet.js",

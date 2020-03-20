@@ -24,6 +24,11 @@ textarea {
     max-width: 280px;
 }
 
+#OverlaySettings {
+    left: 100%;
+    top: -3%;
+    position: absolute !important;
+}
 
 #LeafletMap {
     height: 100%;
