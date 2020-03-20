@@ -3,6 +3,7 @@
 app.controller('HomeCtrl', function ($scope, $timeout) {
     $scope.initialize = function () {
         $scope.overlayEnabled = false;
+        $scope.heatmapEnabled = false;
         CreateMap();
     };
 
@@ -19,7 +20,7 @@ app.controller('HomeCtrl', function ($scope, $timeout) {
         $scope.GeoJsonLayer = new L.FeatureGroup();
         $scope.GeoJsonLayer.bringToBack();
 
-        $scope.Heatmap = new L.HeatLayer();
+        $scope.Heatmap = new L.HeatLayer([]);
 
         var options = {
             position: 'topright',
@@ -100,8 +101,6 @@ app.controller('HomeCtrl', function ($scope, $timeout) {
         $('input:radio[name=Overlay]').each(function () { $(this).prop('checked', false); });
         $scope.GeoJsonLayer.clearLayers();
         $scope.overlayEnabled = false;
-
-        //$timeout($scope.$apply(), 100);
     };
 
     var styleGeoJson = function (feature) {
@@ -123,15 +122,23 @@ app.controller('HomeCtrl', function ($scope, $timeout) {
         xobj.onreadystatechange = function () {
             if (xobj.readyState == 4 && xobj.status == "200") {
                 var heatmap = JSON.parse(xobj.responseText);
-                $scope.Heatmap._latlngs = [];
                 angular.forEach(heatmap, function (value, key) {
                     var latlng = L.latLng(value.latitude, value.longitude);
                     $scope.Heatmap.addLatLng(latlng);
                 });
 
                 $scope.Heatmap.addTo($scope.map);
+                $scope.heatmapEnabled = true;
+
+                $timeout($scope.$apply(), 100);
             }
         };
-    }
+    };
+
+    $scope.removeHeatmaps = function () {
+        $('input:radio[name=Heatmaps]').each(function () { $(this).prop('checked', false); });
+        $scope.Heatmap.setLatLngs([]);
+        $scope.heatmapEnabled = false;
+    };
 
 });

@@ -22,7 +22,14 @@
                 </label>
             </div>
             <div class="d-flex flex-row justify-content-between">
-                <div type="button" class="btn btn-sm btn-outline-danger px-2 py-auto" ng-click="GetHeatMap()">Get Heatmap</div>
+                <h4 class="d-flex flex-column p-0">Heatmaps</h4>
+                <div ng-show="heatmapEnabled" type="button" class="btn btn-sm btn-outline-danger px-2 py-auto" ng-click="removeHeatmaps()"><i class="fas fa-eraser"></i></div>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="Heatmaps" id="NYCTrees" value="NYCTrees" ng-click="GetHeatMap()">
+                <label class="form-check-label" for="NYCTrees">
+                    NYC Trees Census
+                </label>
             </div>
         </div>
         <div id="LeafletMap" class="d-flex flex-column col-10 p-0"></div>
