@@ -10,6 +10,14 @@ app.controller('HomeCtrl', function ($scope, $timeout, $http) {
     $scope.initializeModal = function () {
         $('#strokeColor').colorpicker();
         $('#fillColor').colorpicker();
+
+        $('#strokeColor').on('colorpickerChange', function (event) {
+            $scope.geoJsonStyle.color = event.color.toString();
+        });
+
+        $('#fillColor').on('colorpickerChange', function (event) {
+            $scope.geoJsonStyle.fillColor = event.color.toString();
+        });
     };
 
     var initializeSearchTerms = function () {
@@ -281,14 +289,6 @@ app.controller('HomeCtrl', function ($scope, $timeout, $http) {
         $scope.heatmapEnabled = false;
         $scope.CovidSelected = false;
     };
-
-    $('#strokeColor').on('colorpickerChange', function (event) {
-        $scope.geoJsonStyle.color = event.color.toString();
-    });
-
-    $('#fillColor').on('colorpickerChange', function (event) {
-        $scope.geoJsonStyle.fillColor = event.color.toString();
-    });
 
     $scope.safeApply = function (fn) {
         var phase = this.$root.$$phase;
