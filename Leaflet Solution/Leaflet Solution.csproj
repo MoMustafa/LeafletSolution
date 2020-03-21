@@ -229,7 +229,7 @@
     <Content Include="webfonts\fa-brands-400.svg" />
     <Content Include="webfonts\fa-regular-400.svg" />
     <Content Include="webfonts\fa-solid-900.svg" />
-    <Content Include="Content\Heatmap\heatmapData.json" />
+    <Content Include="Content\Heatmap\nyc_trees.json" />
     <Content Include="Content\bootstrap-colorpicker.css.map" />
     <Content Include="Content\bootstrap-colorpicker.min.css.map" />
     <Content Include="Scripts\bootstrap\bootstrap-colorpicker.js.map" />

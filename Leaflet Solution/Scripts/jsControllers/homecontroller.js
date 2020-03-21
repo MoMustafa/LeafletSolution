@@ -3,6 +3,7 @@
 app.controller('HomeCtrl', function ($scope, $timeout, $http) {
     $scope.initialize = function () {
         $scope.StateSelected = false;
+        $scope.CovidSelected = false;
         CreateMap();
     };
 
@@ -46,7 +47,7 @@ app.controller('HomeCtrl', function ($scope, $timeout, $http) {
         $scope.GeoJsonLayer = new L.FeatureGroup();
         $scope.GeoJsonLayer.bringToBack();
 
-        $scope.Heatmap = new L.HeatLayer([]);
+        $scope.Heatmap = new L.HeatLayer([], {radius: 25});
 
         var options = {
             position: 'topright',
@@ -122,9 +123,10 @@ app.controller('HomeCtrl', function ($scope, $timeout, $http) {
         return "(" + _round(latlng.lat, 6) + ", " + _round(latlng.lng, 6) + ")";
     };
 
-    
-
     $scope.initGeoJson = function (name) {
+        if (name == 'us_states')
+            document.getElementById('Covid').removeAttribute("disabled");
+
         $scope.StateSelected = false;
         var xobj = new XMLHttpRequest();
         xobj.overrideMimeType("application/json");
@@ -150,6 +152,7 @@ app.controller('HomeCtrl', function ($scope, $timeout, $http) {
         $scope.GeoJsonLayer.clearLayers();
         $scope.overlayEnabled = false;
         $scope.StateSelected = false;
+        document.getElementById('Covid').setAttribute("disabled", "true");
     };
 
     $scope.geoJsonStyle = {
@@ -204,6 +207,10 @@ app.controller('HomeCtrl', function ($scope, $timeout, $http) {
         if (/^[a-zA-Z]+$/.test(state)) {
             $scope.StateSelected = state;
             initializeSearchTerms();
+
+            if ($scope.CovidSelected) {
+                $scope.getCovidHeatmap(state);
+            }
         }
     };
 
@@ -217,10 +224,19 @@ app.controller('HomeCtrl', function ($scope, $timeout, $http) {
         $scope.map.setView([input.originalObject.lat, input.originalObject.lng], 8);
     };
 
-    $scope.initHeatMap = function () {
+    $scope.initHeatmap = function (heatmapName) {
+        $scope.Heatmap.setLatLngs([]);
+
+        if (heatmapName == 'covid') {
+            $scope.CovidSelected = true;
+            $scope.StatesAdded = [];
+            $scope.Heatmap.setOptions({ radius: 15, maxZoom: 3 });
+            return;
+        }
+
         var xobj = new XMLHttpRequest();
         xobj.overrideMimeType("application/json");
-        xobj.open("GET", "../../Content/heatmap/heatmapData.json", true);
+        xobj.open("GET", "../../Content/heatmap/" + heatmapName +".json", true);
         xobj.send(null);
         xobj.onreadystatechange = function () {
             if (xobj.readyState == 4 && xobj.status == "200") {
@@ -238,10 +254,32 @@ app.controller('HomeCtrl', function ($scope, $timeout, $http) {
         };
     };
 
+    $scope.getCovidHeatmap = function (state) {
+        if (!$scope.StatesAdded.includes(state)) {
+            $scope.StatesAdded.push(state);
+
+            $http.get("https://data.opendatasoft.com/api/records/1.0/search/?dataset=covid-19-pandemic-worldwide-data%40public&q='" + $scope.StateSelected + "'&rows=500&refine.zone=US")
+                .then(function (response) {
+                    angular.forEach(response.data.records, function (value, key) {
+                        var latlng = L.latLng(value.fields.location[0], value.fields.location[1]);
+                        $scope.Heatmap.addLatLng(latlng);
+                    });
+
+                    if (!$scope.heatmapEnabled) {
+                        $scope.Heatmap.addTo($scope.map);
+                        $scope.heatmapEnabled = true;
+                    }
+
+                    $timeout($scope.safeApply(), 100);
+                });
+        }
+    };
+
     $scope.removeHeatmaps = function () {
         $('input:radio[name=Heatmaps]').each(function () { $(this).prop('checked', false); });
         $scope.Heatmap.setLatLngs([]);
         $scope.heatmapEnabled = false;
+        $scope.CovidSelected = false;
     };
 
     $('#strokeColor').on('colorpickerChange', function (event) {
