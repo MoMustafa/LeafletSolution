@@ -33,3 +33,10 @@ textarea {
 #LeafletMap {
     height: 100%;
 }
+
+.modal-body > div > input[type="text"], 
+.modal-body > div > input[type="number"] {
+    height: 1.5em !important;
+    margin-bottom: 0.5em;
+}
+
