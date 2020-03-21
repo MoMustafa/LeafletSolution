@@ -2,16 +2,22 @@
 
 app.controller('HomeCtrl', function ($scope, $timeout) {
     $scope.initialize = function () {
-        $scope.overlayEnabled = false;
-        $scope.heatmapEnabled = false;
         CreateMap();
+        InitializeColorpicker();
+    };
 
+    var InitializeColorpicker = function () {
         $('#strokeColor').colorpicker();
         $('#fillColor').colorpicker();
     };
 
     var CreateMap = function () {
-        $scope.map = L.map('LeafletMap').setView([33.8650, -96.6561], 5);
+        $scope.overlayEnabled = false;
+        $scope.heatmapEnabled = false;
+
+        $scope.mapCenter = L.latLng(33.8650, -96.6561)
+
+        $scope.map = L.map('LeafletMap').setView($scope.mapCenter, 5);
 
         L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -80,6 +86,23 @@ app.controller('HomeCtrl', function ($scope, $timeout) {
 
             editableLayers.addLayer(layer);
         });
+
+        $scope.map.on('moveend', function (e) {
+            var center = $scope.map.getCenter();
+            $scope.mapCenter.lat = _round(center.lat, 4);
+            $scope.mapCenter.lng = _round(center.lng, 4);
+
+            $timeout($scope.safeApply(), 100);
+        });
+    };
+
+    // Truncate value based on number of decimals
+    var _round = function (num, len) {
+        return Math.round(num * (Math.pow(10, len))) / (Math.pow(10, len));
+    };
+    // Helper method to format LatLng object (x.xxxxxx, y.yyyyyy)
+    var strLatLng = function (latlng) {
+        return "(" + _round(latlng.lat, 6) + ", " + _round(latlng.lng, 6) + ")";
     };
 
     $scope.getGeoJson = function (name) {
@@ -97,7 +120,7 @@ app.controller('HomeCtrl', function ($scope, $timeout) {
                 $scope.GeoJsonLayer.addLayer($scope.geojson);
                 $scope.overlayEnabled = true;
 
-                $timeout($scope.$apply(), 100);
+                $timeout($scope.safeApply(), 100);
             }
         };
     };
@@ -159,6 +182,12 @@ app.controller('HomeCtrl', function ($scope, $timeout) {
         
     };
 
+    $scope.PanMap = function (e) {
+        if ($scope.panInput.panLat.$valid && $scope.panInput.panLng.$valid) {
+            $scope.map.panTo($scope.mapCenter);
+        }
+    };
+
     $scope.GetHeatMap = function () {
         var xobj = new XMLHttpRequest();
         xobj.overrideMimeType("application/json");
@@ -175,7 +204,7 @@ app.controller('HomeCtrl', function ($scope, $timeout) {
                 $scope.Heatmap.addTo($scope.map);
                 $scope.heatmapEnabled = true;
 
-                $timeout($scope.$apply(), 100);
+                $timeout($scope.safeApply(), 100);
             }
         };
     };
@@ -193,4 +222,15 @@ app.controller('HomeCtrl', function ($scope, $timeout) {
     $('#fillColor').on('colorpickerChange', function (event) {
         $scope.geoJsonStyle.fillColor = event.color.toString();
     });
+
+    $scope.safeApply = function (fn) {
+        var phase = this.$root.$$phase;
+        if (phase == '$apply' || phase == '$digest') {
+            if (fn && (typeof (fn) === 'function')) {
+                fn();
+            }
+        } else {
+            this.$apply(fn);
+        }
+    };
 });
