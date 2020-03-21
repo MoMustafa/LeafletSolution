@@ -45,3 +45,9 @@ input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+
+
+#angucomplete-form, #angucomplete-form_value {
+    max-width: 500px !important;
+    width: 285px;
+}

@@ -12,13 +12,13 @@
                 @Html.Partial("~/Views/Modals/_OverlaySettings.cshtml")
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="Overlay" id="USStates" value="USStates" ng-click="getGeoJson('us_states')">
+                <input class="form-check-input" type="radio" name="Overlay" id="USStates" value="USStates" ng-click="initGeoJson('us_states')">
                 <label class="form-check-label" for="USStates">
                     US States
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="Overlay" id="USCounties" value="USCounties" ng-click="getGeoJson('us_counties')">
+                <input class="form-check-input" type="radio" name="Overlay" id="USCounties" value="USCounties" ng-click="initGeoJson('us_counties')">
                 <label class="form-check-label" for="USCounties">
                     US Counties
                 </label>
@@ -29,7 +29,7 @@
                 <div ng-show="heatmapEnabled" type="button" class="btn btn-outline-danger" ng-click="removeHeatmaps()"><i class="fas fa-eraser"></i></div>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="Heatmaps" id="NYCTrees" value="NYCTrees" ng-click="GetHeatMap()">
+                <input class="form-check-input" type="radio" name="Heatmaps" id="NYCTrees" value="NYCTrees" ng-click="initHeatMap()">
                 <label class="form-check-label" for="NYCTrees">
                     NYC Trees Census
                 </label>
@@ -46,10 +46,28 @@
                         <input type="number" name="panLat" min="-90" max="90" step="0.0001" class="form-control" value="{{mapCenter.lat}}" ng-model="mapCenter.lat" required>
                         <input type="number" name="panLng" min="-180" max="180" step="0.0001" class="form-control" value="{{mapCenter.lng}}" ng-model="mapCenter.lng" required>
                     </div>
+                    <div class="d-flex flex-row">
+                        <angucomplete-alt 
+                            ng-if="StateSelected"
+                            id="angucomplete-form"
+                            placeholder="Pan to City in {{StateSelected}}"
+                            pause="100"
+                            selected-object="PanBySelection"
+                            selected-object-data="row"
+                            local-data="cities"
+                            search-fields="name"
+                            title-field="name"
+                            minlength="1"
+                            clear-selected="true"
+                            input-class="form-control" 
+                         />
+                    </div>
                     <button type="submit" class="mw-100 btn btn-outline-success" ng-click="PanMap()">Pan to Location</button>
                 </form>
-            </div>
 
+                
+
+            </div>
         </div>
         <div class="d-flex flex-column col-10 p-0">
             <div id="LeafletMap"></div>

@@ -129,6 +129,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\angucomplete-alt.css" />
     <Content Include="Content\bootstrap-colorpicker.css" />
     <Content Include="Content\bootstrap-colorpicker.min.css" />
     <Content Include="Content\bootstrap-grid.css" />
@@ -156,6 +157,7 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\angucomplete\angucomplete-alt.js" />
     <Content Include="Scripts\angularJS\angular-animate.js" />
     <Content Include="Scripts\angularJS\angular-animate.min.js" />
     <Content Include="Scripts\angularJS\angular-aria.js" />

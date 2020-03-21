@@ -12,6 +12,7 @@ namespace Leaflet_Solution
                       "~/Content/bootstrap.css",
                       "~/Content/bootstrap-colorpicker.css",
                       "~/Content/site.css",
+                      "~/Content/angucomplete-alt.css",
                       "~/Content/font-awesome.css",
                       "~/Content/leaflet.css",
                       "~/Content/leaflet.draw.css",
@@ -42,7 +43,8 @@ namespace Leaflet_Solution
                       "~/Scripts/Leaflet/Control.GeoJsonInfo.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/angular").Include(
-                        "~/Scripts/angularJS/angular.js"));
+                        "~/Scripts/angularJS/angular.js",
+                        "~/Scripts/angucomplete/angucomplete-alt.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jscontrollers").Include(
                 "~/Scripts/jsControllers/homecontroller.js"));

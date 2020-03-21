@@ -1,13 +1,31 @@
-﻿var app = angular.module('MainApp', []);
+﻿var app = angular.module('MainApp', ["angucomplete-alt"]);
 
-app.controller('HomeCtrl', function ($scope, $timeout) {
+app.controller('HomeCtrl', function ($scope, $timeout, $http) {
     $scope.initialize = function () {
+        $scope.StateSelected = false;
         CreateMap();
     };
 
     $scope.initializeModal = function () {
         $('#strokeColor').colorpicker();
         $('#fillColor').colorpicker();
+    };
+
+    var initializeSearchTerms = function () {
+        $scope.cities = [];
+        $http.get("https://public.opendatasoft.com/api/records/1.0/search/?dataset=us-zip-code-latitude-and-longitude&rows=3000&refine.state=" + $scope.StateSelected)
+            .then(function (response) {
+                angular.forEach(response.data.records, function (value, key) {
+                    const exists = $scope.cities.some(city => city.name == value.fields.city + ", " + value.fields.state);
+                    if (!exists) {
+                        $scope.cities.push({
+                            name: value.fields.city + ", " + value.fields.state,
+                            lat: value.fields.latitude,
+                            lng: value.fields.longitude
+                        });
+                    }
+                });
+            });
     };
 
     var CreateMap = function () {
@@ -104,7 +122,10 @@ app.controller('HomeCtrl', function ($scope, $timeout) {
         return "(" + _round(latlng.lat, 6) + ", " + _round(latlng.lng, 6) + ")";
     };
 
-    $scope.getGeoJson = function (name) {
+    
+
+    $scope.initGeoJson = function (name) {
+        $scope.StateSelected = false;
         var xobj = new XMLHttpRequest();
         xobj.overrideMimeType("application/json");
         xobj.open("GET", "../../Content/GeoJSON/" + name + "_geo.json", true);
@@ -128,6 +149,7 @@ app.controller('HomeCtrl', function ($scope, $timeout) {
         $('input:radio[name=Overlay]').each(function () { $(this).prop('checked', false); });
         $scope.GeoJsonLayer.clearLayers();
         $scope.overlayEnabled = false;
+        $scope.StateSelected = false;
     };
 
     $scope.geoJsonStyle = {
@@ -178,7 +200,11 @@ app.controller('HomeCtrl', function ($scope, $timeout) {
     };
 
     var clickFeature = function (e) {
-        
+        var state = e.target.feature.properties.STATE
+        if (/^[a-zA-Z]+$/.test(state)) {
+            $scope.StateSelected = state;
+            initializeSearchTerms();
+        }
     };
 
     $scope.PanMap = function (e) {
@@ -187,7 +213,11 @@ app.controller('HomeCtrl', function ($scope, $timeout) {
         }
     };
 
-    $scope.GetHeatMap = function () {
+    $scope.PanBySelection = function (input) {
+        $scope.map.setView([input.originalObject.lat, input.originalObject.lng], 8);
+    };
+
+    $scope.initHeatMap = function () {
         var xobj = new XMLHttpRequest();
         xobj.overrideMimeType("application/json");
         xobj.open("GET", "../../Content/heatmap/heatmapData.json", true);
