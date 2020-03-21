@@ -3,10 +3,9 @@
 app.controller('HomeCtrl', function ($scope, $timeout) {
     $scope.initialize = function () {
         CreateMap();
-        InitializeColorpicker();
     };
 
-    var InitializeColorpicker = function () {
+    $scope.initializeModal = function () {
         $('#strokeColor').colorpicker();
         $('#fillColor').colorpicker();
     };
