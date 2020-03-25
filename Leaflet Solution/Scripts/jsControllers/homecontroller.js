@@ -134,6 +134,10 @@ app.controller('HomeCtrl', function ($scope, $timeout, $http) {
     $scope.initGeoJson = function (name) {
         if (name == 'us_states')
             document.getElementById('Covid').removeAttribute("disabled");
+        else {
+            document.getElementById('Covid').setAttribute("disabled", "true");
+            $scope.removeHeatmaps();
+        }
 
         $scope.StateSelected = false;
         var xobj = new XMLHttpRequest();
