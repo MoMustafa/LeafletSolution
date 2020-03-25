@@ -212,14 +212,13 @@ app.controller('HomeCtrl', function ($scope, $timeout, $http) {
 
     var clickFeature = function (e) {
         var state = e.target.feature.properties.NAME
-        if (/^[a-zA-Z]+$/.test(state)) {
-            $scope.StateSelected = state;
-            initializeSearchTerms();
+        $scope.StateSelected = state;
+        initializeSearchTerms();
 
-            if ($scope.CovidSelected) {
-                $scope.getCovidHeatmap(state);
-            }
+        if ($scope.CovidSelected) {
+            $scope.getCovidHeatmap(state);
         }
+        
     };
 
     $scope.PanMap = function (e) {
