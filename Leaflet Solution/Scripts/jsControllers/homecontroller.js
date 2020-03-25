@@ -211,7 +211,7 @@ app.controller('HomeCtrl', function ($scope, $timeout, $http) {
     };
 
     var clickFeature = function (e) {
-        var state = e.target.feature.properties.STATE
+        var state = e.target.feature.properties.NAME
         if (/^[a-zA-Z]+$/.test(state)) {
             $scope.StateSelected = state;
             initializeSearchTerms();
@@ -238,7 +238,7 @@ app.controller('HomeCtrl', function ($scope, $timeout, $http) {
         if (heatmapName == 'covid') {
             $scope.CovidSelected = true;
             $scope.StatesAdded = [];
-            $scope.Heatmap.setOptions({ radius: 15, maxZoom: 3 });
+            $scope.Heatmap.setOptions({ radius: 10, maxZoom: 5 });
             return;
         }
 
@@ -266,10 +266,10 @@ app.controller('HomeCtrl', function ($scope, $timeout, $http) {
         if (!$scope.StatesAdded.includes(state)) {
             $scope.StatesAdded.push(state);
 
-            $http.get("https://data.opendatasoft.com/api/records/1.0/search/?dataset=covid-19-pandemic-worldwide-data%40public&q='" + $scope.StateSelected + "'&rows=500&refine.zone=US")
+            $http.get("https://coronavirus-tracker-api.herokuapp.com/v2/locations?country_code=US&province=" + state + "&source=csbs")
                 .then(function (response) {
-                    angular.forEach(response.data.records, function (value, key) {
-                        var latlng = L.latLng(value.fields.location[0], value.fields.location[1]);
+                    angular.forEach(response.data.locations, function (value, key) {
+                        var latlng = L.latLng(value.coordinates.latitude, value.coordinates.longitude);
                         $scope.Heatmap.addLatLng(latlng);
                     });
 
