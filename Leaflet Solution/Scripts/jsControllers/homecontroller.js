@@ -206,6 +206,18 @@ app.controller('HomeCtrl', function ($scope, $timeout, $http) {
 
         $scope.map.addControl($scope.GeoJsonInfo);
         $scope.GeoJsonInfo.update(layer.feature.properties);
+
+        if ($scope.StatesAdded.some(obj => obj.state == layer.feature.properties.NAME)) {
+            var result = $scope.StatesAdded.find(obj => {
+                return obj.state == layer.feature.properties.NAME
+            });
+
+            $scope.GeoJsonInfo.append(
+                '<p><u><b>SARS-CoV-2 Cases</b></u><br />' +
+                '<b>Confirmed: </b>' + result.confirmed + '<br />' +
+                '<b>Recovered: </b>' + result.recovered + '<br />' +
+                '<b>Deaths: </b>' + result.deaths + '</p>');
+        }
     };
 
     var resetHighlight = function (e) {
@@ -237,10 +249,10 @@ app.controller('HomeCtrl', function ($scope, $timeout, $http) {
 
     $scope.initHeatmap = function (heatmapName) {
         $scope.Heatmap.setLatLngs([]);
+        $scope.StatesAdded = [];
 
         if (heatmapName == 'covid') {
             $scope.CovidSelected = true;
-            $scope.StatesAdded = [];
             $scope.Heatmap.setOptions({ radius: 10, maxZoom: 5 });
             return;
         }
@@ -266,11 +278,23 @@ app.controller('HomeCtrl', function ($scope, $timeout, $http) {
     };
 
     $scope.getCovidHeatmap = function (state) {
-        if (!$scope.StatesAdded.includes(state)) {
-            $scope.StatesAdded.push(state);
-
+        if (!$scope.StatesAdded.some(obj => obj.state == state)) {
             $http.get("https://coronavirus-tracker-api.herokuapp.com/v2/locations?country_code=US&province=" + state + "&source=csbs")
                 .then(function (response) {
+
+                    $scope.StatesAdded.push({
+                        state: state,
+                        confirmed: response.data.latest.confirmed,
+                        recovered: response.data.latest.recovered,
+                        deaths: response.data.latest.deaths
+                    });
+
+                    $scope.GeoJsonInfo.append(
+                        '<p><u><b>SARS-CoV-2 Cases</b></u><br />' +
+                        '<b>Confirmed: </b>' + response.data.latest.confirmed + '<br />' +
+                        '<b>Recovered: </b>' + response.data.latest.recovered + '<br />' +
+                        '<b>Deaths: </b>' + response.data.latest.deaths + '</p>');
+
                     angular.forEach(response.data.locations, function (value, key) {
                         var latlng = L.latLng(value.coordinates.latitude, value.coordinates.longitude);
                         $scope.Heatmap.addLatLng(latlng);
@@ -291,6 +315,7 @@ app.controller('HomeCtrl', function ($scope, $timeout, $http) {
         $scope.Heatmap.setLatLngs([]);
         $scope.heatmapEnabled = false;
         $scope.CovidSelected = false;
+        $scope.StatesAdded = [];
     };
 
     $scope.safeApply = function (fn) {

@@ -12,5 +12,9 @@
     update: function (feature) {
         this._div.innerHTML = '<h4>Selection Details</h4>' +
             (feature ? '<b>' + feature.NAME + '</b><br />' : '');
+    },
+
+    append: function (detail) {
+        this._div.innerHTML += '<p>' + detail +'</p><br />'
     }
 });
