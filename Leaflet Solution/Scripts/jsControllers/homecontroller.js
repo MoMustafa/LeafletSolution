@@ -40,6 +40,7 @@ app.controller('HomeCtrl', function ($scope, $timeout, $http) {
     var CreateMap = function () {
         $scope.overlayEnabled = false;
         $scope.heatmapEnabled = false;
+        $scope.showSelections = false;
 
         $scope.mapCenter = L.latLng(33.8650, -96.6561)
 
@@ -49,47 +50,16 @@ app.controller('HomeCtrl', function ($scope, $timeout, $http) {
             attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         }).addTo($scope.map);
 
-        var editableLayers = new L.FeatureGroup();
-        $scope.map.addLayer(editableLayers);
+        $scope.editableLayers = new L.FeatureGroup();
+        $scope.drawOptions.edit.featureGroup = $scope.editableLayers;
+        $scope.map.addLayer($scope.editableLayers);
 
         $scope.GeoJsonLayer = new L.FeatureGroup();
         $scope.GeoJsonLayer.bringToBack();
 
         $scope.Heatmap = new L.HeatLayer([], {radius: 25});
 
-        var options = {
-            position: 'topright',
-            draw: {
-                polyline: {
-                    shapeOptions: {
-                        color: '#f357a1',
-                        weight: 10
-                    }
-                },
-                polygon: {
-                    allowIntersection: false,
-                    drawError: {
-                        color: '#e1e100',
-                        message: '<strong>Oh snap!<strong> you can\'t draw that!'
-                    },
-                    shapeOptions: {
-                        color: '#bada55'
-                    }
-                },
-                circle: true,
-                rectangle: {
-                    shapeOptions: {
-                        clickable: false
-                    }
-                }
-            },
-            edit: {
-                featureGroup: editableLayers,
-                remove: true
-            }
-        };
-
-        var drawControl = new L.Control.Draw(options);
+        var drawControl = new L.Control.Draw($scope.drawOptions);
         $scope.map.addControl(drawControl);
 
         var fullscreenControl = new L.control.fullscreen({
@@ -105,30 +75,49 @@ app.controller('HomeCtrl', function ($scope, $timeout, $http) {
 
         $scope.GeoJsonInfo = new L.Control.GeoJSONInfo({ position: 'bottomleft' });
 
+        $scope.SelectionsMade = [];
+
         //EVENT HANDLERS
         $scope.map.on(L.Draw.Event.CREATED, function (e) {
             var type = e.layerType,
                 layer = e.layer;
 
-            editableLayers.addLayer(layer);
+            $scope.editableLayers.addLayer(layer);
+            var id = $scope.editableLayers.getLayerId(layer);
+            $scope.editableLayers._layers[id].type = type;
+
+            $scope.showSelections = true;
+
+            $timeout($scope.safeApply(), 100);
+        });
+
+        $scope.map.on(L.Draw.Event.DELETED, function (e) {
+            if ($scope.editableLayers.getLayers().length == 0)
+                $scope.showSelections = false;
+
+            $timeout($scope.safeApply(), 100);
+        });
+
+        $scope.map.on(L.Draw.Event.EDITED, function (e) {
+            $timeout($scope.safeApply(), 100);
         });
 
         $scope.map.on('moveend', function (e) {
             var center = $scope.map.getCenter();
-            $scope.mapCenter.lat = _round(center.lat, 4);
-            $scope.mapCenter.lng = _round(center.lng, 4);
+            $scope.mapCenter.lat = $scope._round(center.lat, 4);
+            $scope.mapCenter.lng = $scope._round(center.lng, 4);
 
             $timeout($scope.safeApply(), 100);
         });
     };
 
     // Truncate value based on number of decimals
-    var _round = function (num, len) {
+    $scope._round = function (num, len) {
         return Math.round(num * (Math.pow(10, len))) / (Math.pow(10, len));
     };
     // Helper method to format LatLng object (x.xxxxxx, y.yyyyyy)
-    var strLatLng = function (latlng) {
-        return "(" + _round(latlng.lat, 6) + ", " + _round(latlng.lng, 6) + ")";
+    $scope.strLatLng = function (latlng) {
+        return "(" + $scope._round(latlng.lat, 6) + ", " + $scope._round(latlng.lng, 6) + ")";
     };
 
     $scope.initGeoJson = function (name) {
@@ -176,6 +165,37 @@ app.controller('HomeCtrl', function ($scope, $timeout, $http) {
         fillColor: 'rgb(255, 128, 0)',
         fillOpacity: 0.1
     }
+
+    $scope.drawOptions = {
+        position: 'topright',
+        draw: {
+            polyline: {
+                shapeOptions: {
+                    color: '#f357a1',
+                    weight: 10
+                }
+            },
+            polygon: {
+                allowIntersection: false,
+                drawError: {
+                    color: '#f357a1',
+                    message: '<strong>Oh snap!<strong> you can\'t draw that!'
+                },
+                shapeOptions: {
+                    color: '#bada55'
+                }
+            },
+            circle: true,
+            rectangle: {
+                shapeOptions: {
+                    clickable: false
+                }
+            }
+        },
+        edit: {
+            remove: true
+        }
+    };
 
     $scope.updateOverlayOptions = function () {
         $scope.geojson.setStyle($scope.geoJsonStyle);

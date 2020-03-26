@@ -70,6 +70,26 @@
                     <button type="submit" class="mw-100 btn btn-outline-success" ng-click="PanMap()">Pan to Location</button>
                 </form>
             </div>
+            <hr />
+            <div ng-show="showSelections" id="Selections" class="d-flex flex-column">
+                <h4>Selections</h4>
+                <div class="ng-cloak" ng-repeat="layer in editableLayers._layers">
+                    <h6 class="my-1">{{layer.type}}</h6>
+                    <div ng-if="layer.type === 'circle'">
+                        <div>
+                            center: {{strLatLng(layer._latlng)}}
+                        </div>
+                        <div>
+                            radius: {{_round(layer._mRadius, 2)}}m
+                        </div>
+                    </div>
+                    <div ng-if="layer.type === 'rectangle' || layer.type === 'polygon'">
+                        <div ng-repeat="latlng in layer._latlngs[0]">
+                            {{strLatLng(latlng)}}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="d-flex flex-column col-10 p-0">
             <div id="LeafletMap"></div>
